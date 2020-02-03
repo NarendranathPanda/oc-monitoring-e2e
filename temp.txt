@@ -1,0 +1,312 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: gitlab
+objects:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: gitlab-ce
+      openshift.io/deployment.name: gitlab-ce-1
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: gitlab-ce-1-
+    labels:
+      app: gitlab-ce
+      deployment: gitlab-ce-1
+      deploymentconfig: gitlab-ce
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: gitlab-ce-1
+      uid: 82849e80-465e-11ea-bc14-4a92e1869767
+  spec:
+    containers:
+    - image: gitlab/gitlab-ce@sha256:3089a9ab5ee6e8a418c35312708408ddf07d2b40808f11e8e307aa119fe49313
+      imagePullPolicy: Always
+      name: gitlab-ce
+      ports:
+      - containerPort: 22
+        protocol: TCP
+      - containerPort: 443
+        protocol: TCP
+      - containerPort: 80
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        runAsUser: 1000110000
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/gitlab
+        name: gitlab-ce-volume-1
+      - mountPath: /var/opt/gitlab
+        name: gitlab-ce-volume-2
+      - mountPath: /etc/gitlab
+        name: gitlab-ce-volume-3
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-djb4x
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-tbmbh
+    nodeName: localhost
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000110000
+      seLinuxOptions:
+        level: s0:c11,c0
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - emptyDir: {}
+      name: gitlab-ce-volume-1
+    - emptyDir: {}
+      name: gitlab-ce-volume-2
+    - emptyDir: {}
+      name: gitlab-ce-volume-3
+    - name: default-token-djb4x
+      secret:
+        defaultMode: 420
+        secretName: default-token-djb4x
+  status: {}
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2020-02-03 08:24:59 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2020-02-03 08:23:51 +0000 UTC
+      openshift.io/deployer-pod.name: gitlab-ce-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: gitlab-ce
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"gitlab-ce","namespace":"innovation-2020","selfLink":"/apis/apps.openshift.io/v1/namespaces/innovation-2020/deploymentconfigs/gitlab-ce","uid":"8274937b-465e-11ea-bc14-4a92e1869767","resourceVersion":"126431","generation":2,"creationTimestamp":"2020-02-03T08:23:51Z","labels":{"app":"gitlab-ce"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["gitlab-ce"],"from":{"kind":"ImageStreamTag","namespace":"innovation-2020","name":"gitlab-ce:latest"},"lastTriggeredImage":"gitlab/gitlab-ce@sha256:3089a9ab5ee6e8a418c35312708408ddf07d2b40808f11e8e307aa119fe49313"}}],"replicas":1,"revisionHistoryLimit":10,"test":false,"selector":{"app":"gitlab-ce","deploymentconfig":"gitlab-ce"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"gitlab-ce","deploymentconfig":"gitlab-ce"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"volumes":[{"name":"gitlab-ce-volume-1","emptyDir":{}},{"name":"gitlab-ce-volume-2","emptyDir":{}},{"name":"gitlab-ce-volume-3","emptyDir":{}}],"containers":[{"name":"gitlab-ce","image":"gitlab/gitlab-ce@sha256:3089a9ab5ee6e8a418c35312708408ddf07d2b40808f11e8e307aa119fe49313","ports":[{"containerPort":22,"protocol":"TCP"},{"containerPort":443,"protocol":"TCP"},{"containerPort":80,"protocol":"TCP"}],"resources":{},"volumeMounts":[{"name":"gitlab-ce-volume-1","mountPath":"/var/log/gitlab"},{"name":"gitlab-ce-volume-2","mountPath":"/var/opt/gitlab"},{"name":"gitlab-ce-volume-3","mountPath":"/etc/gitlab"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2020-02-03T08:23:51Z","lastTransitionTime":"2020-02-03T08:23:51Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: gitlab-ce
+      openshift.io/deployment-config.name: gitlab-ce
+    name: gitlab-ce-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: gitlab-ce
+      uid: 8274937b-465e-11ea-bc14-4a92e1869767
+  spec:
+    replicas: 1
+    selector:
+      app: gitlab-ce
+      deployment: gitlab-ce-1
+      deploymentconfig: gitlab-ce
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: gitlab-ce
+          openshift.io/deployment.name: gitlab-ce-1
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: gitlab-ce
+          deployment: gitlab-ce-1
+          deploymentconfig: gitlab-ce
+      spec:
+        containers:
+        - image: gitlab/gitlab-ce@sha256:3089a9ab5ee6e8a418c35312708408ddf07d2b40808f11e8e307aa119fe49313
+          imagePullPolicy: Always
+          name: gitlab-ce
+          ports:
+          - containerPort: 22
+            protocol: TCP
+          - containerPort: 443
+            protocol: TCP
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/log/gitlab
+            name: gitlab-ce-volume-1
+          - mountPath: /var/opt/gitlab
+            name: gitlab-ce-volume-2
+          - mountPath: /etc/gitlab
+            name: gitlab-ce-volume-3
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: gitlab-ce-volume-1
+        - emptyDir: {}
+          name: gitlab-ce-volume-2
+        - emptyDir: {}
+          name: gitlab-ce-volume-3
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: gitlab-ce
+    name: gitlab-ce
+  spec:
+    ports:
+    - name: 22-tcp
+      port: 22
+      protocol: TCP
+      targetPort: 22
+    - name: 80-tcp
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: 443-tcp
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    selector:
+      app: gitlab-ce
+      deploymentconfig: gitlab-ce
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: gitlab-ce
+    name: gitlab-ce
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: gitlab-ce
+      deploymentconfig: gitlab-ce
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: gitlab-ce
+          deploymentconfig: gitlab-ce
+      spec:
+        containers:
+        - image: gitlab/gitlab-ce@sha256:3089a9ab5ee6e8a418c35312708408ddf07d2b40808f11e8e307aa119fe49313
+          imagePullPolicy: Always
+          name: gitlab-ce
+          ports:
+          - containerPort: 22
+            protocol: TCP
+          - containerPort: 443
+            protocol: TCP
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/log/gitlab
+            name: gitlab-ce-volume-1
+          - mountPath: /var/opt/gitlab
+            name: gitlab-ce-volume-2
+          - mountPath: /etc/gitlab
+            name: gitlab-ce-volume-3
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: gitlab-ce-volume-1
+        - emptyDir: {}
+          name: gitlab-ce-volume-2
+        - emptyDir: {}
+          name: gitlab-ce-volume-3
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - gitlab-ce
+        from:
+          kind: ImageStreamTag
+          name: gitlab-ce:latest
+          namespace: innovation-2020
+        lastTriggeredImage: gitlab/gitlab-ce@sha256:3089a9ab5ee6e8a418c35312708408ddf07d2b40808f11e8e307aa119fe49313
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/image.dockerRepositoryCheck: 2020-02-03T08:23:51Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: gitlab-ce
+    name: gitlab-ce
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: gitlab/gitlab-ce
+      from:
+        kind: DockerImage
+        name: 172.30.1.1:5000/innovation-2020/gitlab-ce:latest
+      generation: 2
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
